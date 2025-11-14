@@ -6,291 +6,84 @@
 <title>🌍 Estación de Reciclaje - La Florida</title>
 <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    
+
     body{
         font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-        background:#e9f0ee;
+        /* Más vivo: fondo verde-azulado degradado para mayor presencia */
+        background: linear-gradient(180deg,#dff7ea 0%, #bfeee0 40%, #e6f6fb 100%);
         display:flex;
         flex-direction:column;
         align-items:center;
-        justify-content:center;
+        justify-content:flex-start;
         min-height:100vh;
-        padding:15px 10px;
+        padding:10px 12px 26px;
         touch-action: pan-y;
-        gap:15px;
+        gap:12px;
     }
 
-    /* TÍTULO PRINCIPAL */
+    /* TÍTULO PRINCIPAL - más grande y más arriba */
     .main-title{
-        font-size:clamp(18px, 5vw, 28px);
-        font-weight:bold;
-        color:#2d7a3e;
+        font-size:clamp(20px, 6vw, 34px);
+        font-weight:800;
+        color:#114b22; /* verde oscuro */
         text-align:center;
-        text-shadow:2px 2px 4px rgba(0,0,0,0.1);
-        padding:10px 20px;
-        background:rgba(255,255,255,0.7);
-        border-radius:15px;
-        box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        text-shadow:0 3px 12px rgba(17,75,34,0.12);
+        padding:12px 22px;
+        background:linear-gradient(180deg,#ffffff,#f2fff7);
+        border-radius:14px;
+        box-shadow:0 18px 40px rgba(15,23,42,0.12);
         width:100%;
-        max-width:500px;
+        max-width:560px;
+        margin-top:-24px; /* subir título de forma notoria */
+        border:1px solid rgba(17,75,34,0.06);
     }
 
-    .station-container{
-        width:100%;
-        max-width:100%;
-        padding:0 5px;
+    .station-container{width:100%;max-width:100%;padding:0 6px}
+
+    .station{position:relative;width:100%;height:clamp(240px,44vh,360px);background:transparent;margin:8px auto 0}
+
+    .roof{position:absolute;top:6px;left:4%;right:4%;height:30px;background:linear-gradient(135deg,#d88a2f,#9a4f18);box-shadow:0 8px 26px rgba(0,0,0,0.12);z-index:6;border-radius:8px}
+    .roof::before{content:'';position:absolute;top:-28px;left:-20px;right:-20px;height:30px;background:linear-gradient(135deg,#e59a3e,#d88a2f);clip-path:polygon(0 100%,50% 0,100% 100%);box-shadow:0 4px 10px rgba(0,0,0,0.08)}
+
+    .back-wall{position:absolute;top:44px;left:3%;right:28%;height:calc(100% - 104px);background:linear-gradient(180deg,#eaf6f0 0%,#d9efea 100%);border-radius:4px;box-shadow:inset 0 4px 10px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.06);z-index:2}
+    .side-wall{position:absolute;top:44px;right:3%;width:min(300px,42%);height:calc(100% - 104px);background:linear-gradient(90deg,#f2fbfb 0%,#e6f6f6 100%);transform:perspective(600px) rotateY(-8deg);transform-origin:left center;box-shadow:inset -4px 0 12px rgba(0,0,0,0.06);border:1px solid rgba(0,0,0,0.04);z-index:3}
+
+    .floor{position:absolute;bottom:6px;left:4%;right:4%;height:clamp(60px,14vh,86px);background:linear-gradient(180deg,#ffffff,#eaf7f2);box-shadow:0 18px 40px rgba(15,23,42,0.08);border-radius:12px;z-index:4}
+
+    .openings-left{position:absolute;top:clamp(78px,18%,100px);left:8%;width:38%;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,2.6vw,18px);align-items:start;justify-items:center;z-index:10}
+    .openings-right{position:absolute;top:clamp(78px,18%,100px);right:8%;width:min(240px,36%);display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2.2vw,14px);align-items:start;justify-items:center;z-index:10}
+
+    .open-block{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+
+    .opening{width:clamp(28px,8vw,44px);height:clamp(28px,8vw,44px);background:linear-gradient(180deg,#ffffff,#f8fffb);box-shadow:inset 0 6px 12px rgba(0,0,0,0.06),0 8px 20px rgba(0,0,0,0.06);border-radius:8px;border:2px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .14s ease,box-shadow .14s ease}
+    .opening:hover{transform:translateY(-6px)}
+    .opening:active{transform:translateY(-2px) scale(.98)}
+
+    .opening-label{font-size:12px;color:#0d2718;text-align:center;font-weight:800;line-height:1.05}
+
+    .trash-buttons{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%;max-width:600px;padding:0 8px}
+    .trash-btn{flex:1;min-width:140px;max-width:240px;padding:12px 16px;border:none;border-radius:12px;font-size:15px;font-weight:800;color:white;cursor:pointer;box-shadow:0 16px 36px rgba(15,23,42,0.12);transition:transform .12s ease,box-shadow .12s ease;display:inline-flex;align-items:center;justify-content:center;gap:10px}
+    .trash-btn:hover{transform:translateY(-6px);box-shadow:0 26px 56px rgba(15,23,42,0.16)}
+
+    .trash-btn.no-aprovechable{background:linear-gradient(135deg,#495159 0%,#111827 100%)}
+    .trash-btn.aprovechable{background:linear-gradient(135deg,#2fa6ff 0%,#0b5fc7 100%)}
+    .trash-btn.organico{background:linear-gradient(135deg,#6bd04b 0%,#1e7a1f 100%)}
+
+    .falling-trash{position:fixed;font-size:clamp(20px,5vw,34px);pointer-events:none;z-index:9999;transition:transform .1s linear,opacity .12s linear;will-change:transform,opacity,left,top}
+
+    @keyframes fallToBox{0%{opacity:1;transform:scale(1) rotate(0deg)}100%{opacity:0;transform:scale(.3) rotate(720deg)}}
+
+    @media (max-width:420px){
+        .main-title{font-size:18px;margin-top:-12px;padding:10px 14px}
+        .trash-btn{min-width:120px;padding:10px 12px}
+        .openings-left,.openings-right{top:70px}
     }
 
-    /* Edificio optimizado para móvil */
-    .station{
-        position:relative;
-        width:100%;
-        height:clamp(250px, 45vh, 350px);
-        background:transparent;
-        margin:0 auto;
+    @media (min-width:900px){
+        /* en pantallas grandes, hacer título más prominente */
+        .main-title{font-size:36px;max-width:720px;margin-top:-36px}
     }
 
-    /* Techo */
-    .roof{
-        position:absolute;
-        top:5px;
-        left:0;
-        right:0;
-        height:25px;
-        background:linear-gradient(135deg,#b86f2a,#93501a);
-        box-shadow:0 4px 10px rgba(0,0,0,0.15);
-        z-index:5;
-    }
-    
-    .roof::before{
-        content:'';
-        position:absolute;
-        top:-25px;
-        left:-20px;
-        right:-20px;
-        height:27px;
-        background:linear-gradient(135deg,#c8823a,#b86f2a);
-        clip-path:polygon(0 100%,50% 0,100% 100%);
-        box-shadow:0 2px 6px rgba(0,0,0,0.12);
-    }
-
-    /* Pared principal (izquierda) */
-    .back-wall{
-        position:absolute;
-        top:35px;
-        left:3%;
-        right:28%;
-        height:calc(100% - 95px);
-        background:linear-gradient(180deg,#cbd6d8 0%,#c1c9cc 100%);
-        border-radius:2px;
-        box-shadow:inset 0 2px 6px rgba(0,0,0,0.08);
-        border:1px solid rgba(0,0,0,0.06);
-        z-index:2;
-    }
-
-    /* Pared lateral (derecha) MÁS ANCHA */
-    .side-wall{
-        position:absolute;
-        top:35px;
-        right:3%;
-        width:min(280px, 42%);
-        height:calc(100% - 95px);
-        background:linear-gradient(90deg,#bfc8c6 0%,#aeb8b6 100%);
-        transform:perspective(600px) rotateY(-10deg);
-        transform-origin:left center;
-        box-shadow:inset -4px 0 10px rgba(0,0,0,0.1);
-        border:1px solid rgba(0,0,0,0.05);
-        z-index:3;
-    }
-
-    /* Plataforma */
-    .floor{
-        position:absolute;
-        bottom:0;
-        left:0;
-        right:0;
-        height:clamp(60px, 14vh, 80px);
-        background:linear-gradient(180deg,#d9dfe0,#bfc6c7);
-        box-shadow:0 8px 20px rgba(0,0,0,0.15);
-        border-radius:8px;
-        z-index:4;
-    }
-
-    /* Contenedor de aperturas izquierda - GRID PERFECTO */
-    .openings-left{
-        position:absolute;
-        top:clamp(70px, 16%, 95px);
-        left:8%;
-        width:38%;
-        display:grid;
-        grid-template-columns:repeat(3, 1fr);
-        gap:clamp(8px, 2vw, 15px);
-        align-items:start;
-        justify-items:center;
-        z-index:10;
-    }
-
-    /* Contenedor de aperturas derecha - GRID PERFECTO */
-    .openings-right{
-        position:absolute;
-        top:clamp(70px, 16%, 95px);
-        right:8%;
-        width:min(220px, 34%);
-        display:grid;
-        grid-template-columns:repeat(3, 1fr);
-        gap:clamp(6px, 1.8vw, 12px);
-        align-items:start;
-        justify-items:center;
-        z-index:10;
-    }
-
-    /* Bloque individual - SÚPER PEQUEÑO */
-    .open-block{
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:3px;
-        width:100%;
-    }
-
-    /* Apertura (hueco) - SÚPER PEQUEÑO */
-    .opening{
-        width:clamp(22px, 7vw, 35px);
-        height:clamp(22px, 7vw, 35px);
-        background:rgba(255,255,255,0.3);
-        box-shadow:inset 0 2px 5px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
-        border:clamp(3px, 0.8vw, 5px) solid rgba(0,0,0,0.1);
-        border-radius:2px;
-        background-clip:padding-box;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        position:relative;
-        cursor:pointer;
-        transition:transform 0.2s, box-shadow 0.2s;
-    }
-
-    .opening:active{
-        transform:scale(0.95);
-        box-shadow:inset 0 3px 8px rgba(0,0,0,0.3);
-    }
-
-    /* Etiqueta - MÁS GRANDE */
-    .opening-label{
-        font-size:clamp(12px, 6.6vw, 16px);
-        color:#1a1a1a;
-        text-align:center;
-        font-weight:700;
-        line-height:1.1;
-        padding:0 2px;
-        text-shadow:0 1px 2px rgba(255,255,255,0.9);
-    }
-
-    /* BOTONES DE BASURA */
-    .trash-buttons{
-        display:flex;
-        flex-wrap:wrap;
-        gap:8px;
-        justify-content:center;
-        width:100%;
-        max-width:500px;
-        padding:0 10px;
-    }
-
-    .trash-btn{
-        flex:1;
-        min-width:calc(50% - 8px);
-        max-width:150px;
-        padding:clamp(8px, 2vw, 12px) clamp(10px, 3vw, 15px);
-        border:none;
-        border-radius:10px;
-        font-size:clamp(10px, 2.5vw, 14px);
-        font-weight:bold;
-        color:white;
-        cursor:pointer;
-        box-shadow:0 4px 10px rgba(0,0,0,0.2);
-        transition:transform 0.2s, box-shadow 0.2s;
-        text-decoration:none;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:5px;
-    }
-
-    .trash-btn:active{
-        transform:scale(0.95);
-        box-shadow:0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    .trash-btn.no-aprovechable{
-        background:linear-gradient(135deg, #78909c 0%, #546e7a 100%);
-    }
-
-    .trash-btn.aprovechable{
-        background:linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
-    }
-
-    .trash-btn.organico{
-        background:linear-gradient(135deg, #7cb342 0%, #558b2f 100%);
-    }
-
-    /* BASURA CAYENDO HACIA CASILLAS */
-    .falling-trash{
-        position:fixed;
-        font-size:clamp(20px, 5vw, 32px);
-        pointer-events:none;
-        z-index:9999;
-        transition:all 0.1s linear;
-    }
-
-    @keyframes fallToBox{
-        0%{
-            opacity:1;
-            transform:scale(1) rotate(0deg);
-        }
-        100%{
-            opacity:0;
-            transform:scale(0.3) rotate(720deg);
-        }
-    }
-
-    /* Pantallas muy pequeñas */
-    @media (max-width:360px){
-        .station{height:clamp(220px, 42vh, 280px)}
-        .back-wall, .side-wall{height:calc(100% - 85px)}
-        .floor{height:clamp(50px, 12vh, 70px)}
-        .openings-left{gap:6px; width:40%; left:7%}
-        .openings-right{gap:5px; width:32%; right:7%}
-        .opening-label{font-size:5px}
-        .opening{
-            width:clamp(20px, 6vw, 28px);
-            height:clamp(20px, 6vw, 28px);
-        }
-        .main-title{font-size:16px; padding:8px 15px}
-        .trash-btn{font-size:10px; padding:7px 10px}
-    }
-
-    /* Landscape móvil */
-    @media (max-height:500px) and (orientation:landscape){
-        .station{height:clamp(200px, 70vh, 260px)}
-        .openings-left, .openings-right{top:clamp(55px, 14%, 75px)}
-        .floor{height:clamp(45px, 16vh, 65px)}
-    }
-
-    /* Tablets pequeñas */
-    @media (min-width:481px) and (max-width:768px){
-        .station{height:clamp(300px, 50vh, 380px)}
-        .back-wall{right:30%}
-        .side-wall{width:min(300px, 44%)}
-        .openings-left{width:36%; gap:12px}
-        .openings-right{width:min(240px, 36%); gap:10px}
-        .opening{
-            width:clamp(28px, 8vw, 42px);
-            height:clamp(28px, 8vw, 42px);
-        }
-        .opening-label{font-size:clamp(8px, 1.8vw, 11px)}
-        .trash-btn{min-width:140px; max-width:180px}
-    }
 </style>
 </head>
 <body>
