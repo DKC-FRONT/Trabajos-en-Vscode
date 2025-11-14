@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>🌍 Estación de Reciclaje - La Florida</title>
+<style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    
+    body{
+        font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        background:#e9f0ee;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        min-height:100vh;
+        padding:15px 10px;
+        touch-action: pan-y;
+        gap:15px;
+    }
+
+    /* TÍTULO PRINCIPAL */
+    .main-title{
+        font-size:clamp(18px, 5vw, 28px);
+        font-weight:bold;
+        color:#2d7a3e;
+        text-align:center;
+        text-shadow:2px 2px 4px rgba(0,0,0,0.1);
+        padding:10px 20px;
+        background:rgba(255,255,255,0.7);
+        border-radius:15px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        width:100%;
+        max-width:500px;
+    }
+
+    .station-container{
+        width:100%;
+        max-width:100%;
+        padding:0 5px;
+    }
+
+    /* Edificio optimizado para móvil */
+    .station{
+        position:relative;
+        width:100%;
+        height:clamp(250px, 45vh, 350px);
+        background:transparent;
+        margin:0 auto;
+    }
+
+    /* Techo */
+    .roof{
+        position:absolute;
+        top:5px;
+        left:0;
+        right:0;
+        height:25px;
+        background:linear-gradient(135deg,#b86f2a,#93501a);
+        box-shadow:0 4px 10px rgba(0,0,0,0.15);
+        z-index:5;
+    }
+    
+    .roof::before{
+        content:'';
+        position:absolute;
+        top:-25px;
+        left:-20px;
+        right:-20px;
+        height:27px;
+        background:linear-gradient(135deg,#c8823a,#b86f2a);
+        clip-path:polygon(0 100%,50% 0,100% 100%);
+        box-shadow:0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    /* Pared principal (izquierda) */
+    .back-wall{
+        position:absolute;
+        top:35px;
+        left:3%;
+        right:28%;
+        height:calc(100% - 95px);
+        background:linear-gradient(180deg,#cbd6d8 0%,#c1c9cc 100%);
+        border-radius:2px;
+        box-shadow:inset 0 2px 6px rgba(0,0,0,0.08);
+        border:1px solid rgba(0,0,0,0.06);
+        z-index:2;
+    }
+
+    /* Pared lateral (derecha) MÁS ANCHA */
+    .side-wall{
+        position:absolute;
+        top:35px;
+        right:3%;
+        width:min(280px, 42%);
+        height:calc(100% - 95px);
+        background:linear-gradient(90deg,#bfc8c6 0%,#aeb8b6 100%);
+        transform:perspective(600px) rotateY(-10deg);
+        transform-origin:left center;
+        box-shadow:inset -4px 0 10px rgba(0,0,0,0.1);
+        border:1px solid rgba(0,0,0,0.05);
+        z-index:3;
+    }
+
+    /* Plataforma */
+    .floor{
+        position:absolute;
+        bottom:0;
+        left:0;
+        right:0;
+        height:clamp(60px, 14vh, 80px);
+        background:linear-gradient(180deg,#d9dfe0,#bfc6c7);
+        box-shadow:0 8px 20px rgba(0,0,0,0.15);
+        border-radius:8px;
+        z-index:4;
+    }
+
+    /* Contenedor de aperturas izquierda - GRID PERFECTO */
+    .openings-left{
+        position:absolute;
+        top:clamp(70px, 16%, 95px);
+        left:8%;
+        width:38%;
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:clamp(8px, 2vw, 15px);
+        align-items:start;
+        justify-items:center;
+        z-index:10;
+    }
+
+    /* Contenedor de aperturas derecha - GRID PERFECTO */
+    .openings-right{
+        position:absolute;
+        top:clamp(70px, 16%, 95px);
+        right:8%;
+        width:min(220px, 34%);
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:clamp(6px, 1.8vw, 12px);
+        align-items:start;
+        justify-items:center;
+        z-index:10;
+    }
+
+    /* Bloque individual - SÚPER PEQUEÑO */
+    .open-block{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:3px;
+        width:100%;
+    }
+
+    /* Apertura (hueco) - SÚPER PEQUEÑO */
+    .opening{
+        width:clamp(22px, 7vw, 35px);
+        height:clamp(22px, 7vw, 35px);
+        background:rgba(255,255,255,0.3);
+        box-shadow:inset 0 2px 5px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15);
+        border:clamp(3px, 0.8vw, 5px) solid rgba(0,0,0,0.1);
+        border-radius:2px;
+        background-clip:padding-box;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        position:relative;
+        cursor:pointer;
+        transition:transform 0.2s, box-shadow 0.2s;
+    }
+
+    .opening:active{
+        transform:scale(0.95);
+        box-shadow:inset 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Etiqueta - MÁS GRANDE */
+    .opening-label{
+        font-size:clamp(20px, 6.6vw, 32px);
+        color:#1a1a1a;
+        text-align:center;
+        font-weight:700;
+        line-height:1.1;
+        padding:0 2px;
+        text-shadow:0 1px 2px rgba(255,255,255,0.9);
+    }
+
+    /* BOTONES DE BASURA */
+    .trash-buttons{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        justify-content:center;
+        width:100%;
+        max-width:500px;
+        padding:0 10px;
+    }
+
+    .trash-btn{
+        flex:1;
+        min-width:calc(50% - 8px);
+        max-width:150px;
+        padding:clamp(8px, 2vw, 12px) clamp(10px, 3vw, 15px);
+        border:none;
+        border-radius:10px;
+        font-size:clamp(10px, 2.5vw, 14px);
+        font-weight:bold;
+        color:white;
+        cursor:pointer;
+        box-shadow:0 4px 10px rgba(0,0,0,0.2);
+        transition:transform 0.2s, box-shadow 0.2s;
+        text-decoration:none;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:5px;
+    }
+
+    .trash-btn:active{
+        transform:scale(0.95);
+        box-shadow:0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .trash-btn.no-aprovechable{
+        background:linear-gradient(135deg, #78909c 0%, #546e7a 100%);
+    }
+
+    .trash-btn.aprovechable{
+        background:linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+    }
+
+    .trash-btn.organico{
+        background:linear-gradient(135deg, #7cb342 0%, #558b2f 100%);
+    }
+
+    /* BASURA CAYENDO HACIA CASILLAS */
+    .falling-trash{
+        position:fixed;
+        font-size:clamp(20px, 5vw, 32px);
+        pointer-events:none;
+        z-index:9999;
+        transition:all 0.1s linear;
+    }
+
+    @keyframes fallToBox{
+        0%{
+            opacity:1;
+            transform:scale(1) rotate(0deg);
+        }
+        100%{
+            opacity:0;
+            transform:scale(0.3) rotate(720deg);
+        }
+    }
+
+    /* Pantallas muy pequeñas */
+    @media (max-width:360px){
+        .station{height:clamp(220px, 42vh, 280px)}
+        .back-wall, .side-wall{height:calc(100% - 85px)}
+        .floor{height:clamp(50px, 12vh, 70px)}
+        .openings-left{gap:6px; width:40%; left:7%}
+        .openings-right{gap:5px; width:32%; right:7%}
+        .opening-label{font-size:5px}
+        .opening{
+            width:clamp(20px, 6vw, 28px);
+            height:clamp(20px, 6vw, 28px);
+        }
+        .main-title{font-size:16px; padding:8px 15px}
+        .trash-btn{font-size:10px; padding:7px 10px}
+    }
+
+    /* Landscape móvil */
+    @media (max-height:500px) and (orientation:landscape){
+        .station{height:clamp(200px, 70vh, 260px)}
+        .openings-left, .openings-right{top:clamp(55px, 14%, 75px)}
+        .floor{height:clamp(45px, 16vh, 65px)}
+    }
+
+    /* Tablets pequeñas */
+    @media (min-width:481px) and (max-width:768px){
+        .station{height:clamp(300px, 50vh, 380px)}
+        .back-wall{right:30%}
+        .side-wall{width:min(300px, 44%)}
+        .openings-left{width:36%; gap:12px}
+        .openings-right{width:min(240px, 36%); gap:10px}
+        .opening{
+            width:clamp(28px, 8vw, 42px);
+            height:clamp(28px, 8vw, 42px);
+        }
+        .opening-label{font-size:clamp(8px, 1.8vw, 11px)}
+        .trash-btn{min-width:140px; max-width:180px}
+    }
+</style>
+</head>
+<body>
+    <!-- TÍTULO VERDE -->
+    <div class="main-title">🌿 CONDOMINIO CAMPESTRE LA FLORIDA 🌿</div>
+
+    <div class="station-container">
+        <div class="station">
+            <div class="roof"></div>
+            <div class="back-wall"></div>
+            <div class="side-wall"></div>
+
+            <!-- Tres huecos izquierda -->
+            <div class="openings-left">
+                <div class="open-block">
+                    <div class="opening" id="casilla-no-aprovechable"></div>
+                    <div class="opening-label">NO<br>APROV.</div>
+                </div>
+                <div class="open-block">
+                    <div class="opening" id="casilla-aprovechable"></div>
+                    <div class="opening-label">APROV.</div>
+                </div>
+                <div class="open-block">
+                    <div class="opening" id="casilla-organico-1"></div>
+                    <div class="opening-label">ORG.</div>
+                </div>
+            </div>
+
+            <!-- Tres huecos derecha -->
+            <div class="openings-right">
+                <div class="open-block">
+                    <div class="opening" id="casilla-organico-2"></div>
+                    <div class="opening-label">ORG.</div>
+                </div>
+                <div class="open-block">
+                    <div class="opening" id="casilla-organico-3"></div>
+                    <div class="opening-label">ORG.</div>
+                </div>
+                <div class="open-block">
+                    <div class="opening" id="casilla-organico-4"></div>
+                    <div class="opening-label">ORG.</div>
+                </div>
+            </div>
+
+            <div class="floor"></div>
+        </div>
+    </div>
+
+    <!-- BOTONES DE BASURA -->
+    <div class="trash-buttons">
+        <button class="trash-btn no-aprovechable" onclick="irABasura('no-aprovechable')">
+            🗑️ No Aprovechable
+        </button>
+        <button class="trash-btn aprovechable" onclick="irABasura('aprovechable')">
+            ♻️ Aprovechable
+        </button>
+        <button class="trash-btn organico" onclick="irABasura('organico')">
+            🍎 Orgánico
+        </button>
+    </div>
+
+    <script>
+        // Emojis de basura por tipo
+        const trashEmojis = {
+            'no-aprovechable': ['🗑️', '🧻', '🍿', '💔', '🧷', '🔩'],
+            'aprovechable': ['♻️', '📦', '📄', '🥤', '🍶', '📰', '🧴'],
+            'organico': ['🍎', '🍌', '🥕', '🍊', '🥬', '🍅', '🍇', '🥔', '🌽']
+        };
+
+        // Mapeo de tipo de basura a casillas
+        const casillasPorTipo = {
+            'no-aprovechable': ['casilla-no-aprovechable'],
+            'aprovechable': ['casilla-aprovechable'],
+            'organico': ['casilla-organico-1', 'casilla-organico-2', 'casilla-organico-3', 'casilla-organico-4']
+        };
+
+        function tirarBasura(tipo) {
+            const emojis = trashEmojis[tipo];
+            const casillas = casillasPorTipo[tipo];
+            const cantidad = Math.floor(Math.random() * 6) + 10; // 10-15 emojis
+
+            for (let i = 0; i < cantidad; i++) {
+                setTimeout(() => {
+                    // Selecciona una casilla aleatoria del tipo
+                    const casillaId = casillas[Math.floor(Math.random() * casillas.length)];
+                    crearBasuraCayendo(emojis, casillaId);
+                }, i * 120); // Cada 120ms cae uno
+            }
+        }
+
+        function crearBasuraCayendo(emojis, casillaId) {
+            const trash = document.createElement('div');
+            trash.className = 'falling-trash';
+            trash.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Posición inicial aleatoria en la parte superior
+            const startX = Math.random() * (window.innerWidth - 50);
+            const startY = -50;
+            
+            trash.style.left = startX + 'px';
+            trash.style.top = startY + 'px';
+            
+            document.body.appendChild(trash);
+            
+            // Obtener posición de la casilla destino
+            const casilla = document.getElementById(casillaId);
+            if (!casilla) return;
+            
+            const rect = casilla.getBoundingClientRect();
+            const targetX = rect.left + rect.width / 2 - 15; // centrado
+            const targetY = rect.top + rect.height / 2 - 15;
+            
+            // Animar hacia la casilla
+            let frame = 0;
+            const totalFrames = 60; // 1 segundo a 60fps
+            
+            const animate = () => {
+                if (frame >= totalFrames) {
+                    // Animación final de desaparición
+                    trash.style.animation = 'fallToBox 0.3s forwards';
+                    setTimeout(() => trash.remove(), 300);
+                    return;
+                }
+                
+                frame++;
+                const progress = frame / totalFrames;
+                
+                // Interpolación con curva ease-in
+                const easeProgress = progress * progress;
+                
+                const currentX = startX + (targetX - startX) * easeProgress;
+                const currentY = startY + (targetY - startY) * easeProgress;
+                
+                trash.style.left = currentX + 'px';
+                trash.style.top = currentY + 'px';
+                trash.style.transform = `rotate(${progress * 360}deg)`;
+                
+                requestAnimationFrame(animate);
+            };
+            
+            requestAnimationFrame(animate);
+        }
+
+        function irABasura(tipo) {
+            // Tira la basura hacia las casillas
+            tirarBasura(tipo);
+        }
+    </script>
+</body>
+</html>
